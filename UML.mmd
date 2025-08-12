@@ -1,0 +1,65 @@
+classDiagram
+
+class Utilisateur {
+  +int id
+  +string nom
+  +string email
+  +string mot_de_passe
+  +string role
+}
+
+class Categorie {
+  +int id
+  +string nom
+  +int parent_id
+  +int ordre_affichage
+}
+
+class Probleme {
+  +int id
+  +string titre
+  +string description
+  +string image_url
+  +int categorie_id
+}
+
+class Actualite {
+  +int id
+  +string titre
+  +string contenu
+  +datetime date_creation
+  +string type
+  +int auteur_id
+}
+
+class Notification {
+  +int id
+  +int utilisateur_id
+  +int actualite_id
+  +string statut
+}
+
+class Abonnement {
+  +int utilisateur_id
+  +int categorie_id
+}
+
+class Favoris {
+  +int utilisateur_id
+  +int categorie_id
+}
+
+%% Relations
+
+Utilisateur "1" --> "0..*" Probleme : consulte
+Utilisateur "1" --> "0..*" Actualite : cree
+Utilisateur "1" --> "0..*" Notification : recoit
+Utilisateur "1" --> "0..*" Abonnement
+Utilisateur "1" --> "0..*" Favoris
+
+Categorie "1" --> "0..*" Probleme : contient
+Categorie "1" --> "0..*" Abonnement
+Categorie "1" --> "0..*" Favoris
+Categorie "0..1" --> "0..*" Categorie : parent
+
+Actualite "1" --> "0..*" Notification : genere

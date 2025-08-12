@@ -19,6 +19,6 @@ public class ApiController {
 
     @GetMapping("/fake")
     public String getFakeData() {
-        return faker.company().industry();
+        return faker.job().title();
     }
 }
