@@ -1,0 +1,78 @@
+classDiagram
+    direction LR
+
+class Utilisateur {
++Long id
++String username
++String password
++String role
+}
+
+class Category {
++Long id
++String nom
++int ordre_affichage
+}
+
+class Problem {
++Long id
++String titre
++String description
+}
+
+class News {
++Long id
++String titre
++String contenu
++Date date_creation
++String type
+    }
+
+class Abonnement {
+' Table de liaison '
+}
+
+class Favoris {
+' Table de liaison '
+}
+
+class Notification {
++Long id
++boolean isRead
+}
+
+
+Utilisateur "1" <|-- Administrator
+
+Utilisateur "1" -- "0..*" Abonnement
+Category "1" -- "0..*" Abonnement
+
+Utilisateur "1" -- "0..*" Favoris
+Category "1" -- "0..*" Favoris
+
+Utilisateur "1" -- "0..*" Notification
+News "1" -- "0..*" Notification
+
+
+Category "1" --* "0..*" Problem
+Category "1" --* "0..*" Category : "parent / children"
+Category "1" --* "0..*" News
+
+Problem "1" --|> "1" DecisionStep : "firstStep"
+DecisionStep "1" --* "1..*" Choice : propose
+Choice "1" --> "0..1" DecisionStep : "nextStep"
+
+
+Utilisateur "1" --* "0..*" News : publie
+
+class DecisionStep {
+    +Long id
+    +String text
+    +String imageUrl
+    +boolean isFinal
+}
+
+class Choice {
+    +Long id
+    +String text
+}
