@@ -1,62 +1,60 @@
 erDiagram
 
-  UTILISATEUR {
-    int id PK
-    string nom
-    string email
-    string mot_de_passe
-    string role
-    %% role: agent | modo | admin
+  USER {
+    Long id PK
+    string username
+    string password
+    Role role
+    %% role(enum): agent | modo | admin
   }
 
-  CATEGORIE {
-    int id PK
-    string nom
+  CATEGORY {
+    Long id PK
+    string name
     int parent_id FK
-    int ordre_affichage
   }
 
-  PROBLEME {
-    int id PK
+  PROBLEM {
+    Long id PK
     string titre
     string description
     string image_url
-    int categorie_id FK
+    int CATEGORY_id FK
   }
 
-  ACTUALITE {
+  NEWS {
     int id PK
-    string titre
-    string contenu
-    datetime date_creation
-    string type
+    string title
+    string content
+    datetime creation_time
+    NewsType(Long) type FK
     int auteur_id FK
   }
 
   NOTIFICATION {
     int id PK
     int utilisateur_id FK
-    int actualite_id FK
+    int NEWS_id FK
     string statut
   }
 
   ABONNEMENT {
     int utilisateur_id PK
-    int categorie_id PK
+    int CATEGORY_id PK
   }
 
   FAVORIS {
     int utilisateur_id PK
-    int categorie_id PK
+    int CATEGORY_id PK
   }
 
-  CATEGORIE ||--o{ CATEGORIE : parent
-  CATEGORIE ||--o{ PROBLEME : contient
-  UTILISATEUR ||--o{ PROBLEME : consulte
-  UTILISATEUR ||--o{ ABONNEMENT : s_abonne
-  CATEGORIE ||--o{ ABONNEMENT : est_abonnement
-  UTILISATEUR ||--o{ FAVORIS : met_en_favori
-  CATEGORIE ||--o{ FAVORIS : est_favori
-  UTILISATEUR ||--o{ ACTUALITE : cree
-  ACTUALITE ||--o{ NOTIFICATION : genere
-  UTILISATEUR ||--o{ NOTIFICATION : recoit
+  CATEGORY ||--o{ CATEGORY : parent
+  CATEGORY ||--o{ PROBLEM : contient
+  USER ||--o{ PROBLEM : consulte
+  USER ||--o{ ABONNEMENT : s_abonne
+  CATEGORY ||--o{ ABONNEMENT : est_abonnement
+  USER ||--o{ FAVORIS : met_en_favori
+  CATEGORY ||--o{ FAVORIS : est_favori
+  USER ||--o{ NEWS : cree
+  NEWS ||--o{ NOTIFICATION : genere
+  USER ||--o{ NOTIFICATION : recoit

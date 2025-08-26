@@ -13,7 +13,7 @@ class NewsType {
     MISE_A_JOUR
 }
 
-class Utilisateur {
+class User {
 -Long id
 -String username
 -String password
@@ -62,13 +62,13 @@ class Abonnement
 class Favoris
 
 
-Utilisateur "1" -- "0..*" Abonnement
+User "1" -- "0..*" Abonnement
 Category "1" -- "0..*" Abonnement
 
-Utilisateur "1" -- "0..*" Favoris
+User "1" -- "0..*" Favoris
 Category "1" -- "0..*" Favoris
 
-Utilisateur "1" -- "0..*" Notification
+User "1" -- "0..*" Notification
 News "1" -- "0..*" Notification
 
 Category "1" --* "0..*" Problem : contient
@@ -78,7 +78,7 @@ Category "1" --* "0..*" News : concerne
 
 Problem "1" --|> "1" DecisionStep : "firstStep"
 
-Utilisateur "1" --* "0..*" News : publie
+User "1" --* "0..*" News : publie
 
 DecisionStep "1" --* "1..*" Choice : propose
 Choice "1" --> "0..1" DecisionStep : "nextStep"
