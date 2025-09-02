@@ -12,14 +12,17 @@ public class MainSeeder {
     // This section is intended solely for demonstration, testing, and development purposes. (Dev)
 
     private final CategorySeeder categorySeeder;
+    private final UserSeeder userSeeder;
 
     @Autowired
-    public MainSeeder(CategorySeeder categorySeeder) {
+    public MainSeeder(CategorySeeder categorySeeder, UserSeeder userSeeder) {
         this.categorySeeder = categorySeeder;
+        this.userSeeder = userSeeder;
     }
 
     @PostConstruct
     public void seed(){
         categorySeeder.seedCategories(2, 3);
+        userSeeder.seedUsers(10);
     }
 }

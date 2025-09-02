@@ -6,6 +6,7 @@ import fr.pasdecalais.assist62api.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -46,6 +47,7 @@ public class UserController {
      * @return l'utilisateur correspondant
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
@@ -56,6 +58,7 @@ public class UserController {
      * @return l'utilisateur correspondant
      */
     @GetMapping("/email/{email}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponseDTO> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
@@ -66,6 +69,7 @@ public class UserController {
      * @return l'utilisateur créé
      */
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
         UserResponseDTO createdUser = userService.createUser(userRequestDTO);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -82,6 +86,7 @@ public class UserController {
      * @return l'utilisateur mis à jour
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or #id == authentication.principal.id")
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDTO userRequestDTO) {
         UserResponseDTO updatedUser = userService.updateUser(id, userRequestDTO);
         return ResponseEntity.ok(updatedUser);
@@ -93,6 +98,7 @@ public class UserController {
      * @return réponse sans contenu
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
