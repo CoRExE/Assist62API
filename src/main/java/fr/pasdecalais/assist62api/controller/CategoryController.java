@@ -1,75 +1,131 @@
 package fr.pasdecalais.assist62api.controller;
 
-import fr.pasdecalais.assist62api.model.Category;
+import fr.pasdecalais.assist62api.dto.CategoryRequestDTO;
+import fr.pasdecalais.assist62api.dto.CategoryResponseDTO;
 import fr.pasdecalais.assist62api.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
-@RestController // Indique que cette classe est un contrôleur REST (elle renverra du JSON)
-@RequestMapping("/api/category") // Toutes les URL de ce contrôleur commenceront par /api/categories
+/**
+ * Contrôleur REST pour la gestion des catégories.
+ * Fournit des endpoints pour créer, lire, mettre à jour et supprimer des catégories,
+ * ainsi que pour récupérer leurs enfants et racines.
+ */
+@RestController
+@RequestMapping("/api/category")
 public class CategoryController {
+
     private final CategoryService categoryService;
 
+    /**
+     * Injection du service de gestion des catégories.
+     * @param categoryService le service de catégorie
+     */
     @Autowired
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-    // Methods GET
-    @GetMapping
-    public List<Category> getRootCategories() {
-        return categoryService.getRootCategories();
+    /**
+     * Récupère toutes les catégories racines (sans parents).
+     * @return liste des catégories racines
+     */
+    @GetMapping("/root")
+    public ResponseEntity<List<CategoryResponseDTO>> getRootCategories() {
+        return ResponseEntity.ok(categoryService.getRootCategories());
     }
 
+    /**
+     * Récupère toutes les catégories.
+     * @return liste de toutes les catégories
+     */
     @GetMapping("/all")
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
+        return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
+    /**
+     * Récupère une catégorie par son identifiant.
+     * @param id identifiant de la catégorie
+     * @return la catégorie correspondante
+     */
     @GetMapping("/{id}")
-    public Category getCategoryById(@PathVariable Long id) {
-        return categoryService.getCategoryById(id);
+    public ResponseEntity<CategoryResponseDTO> getCategoryById(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
-    @GetMapping("/{name}")
-    public Category getCategoryByName(@PathVariable String name) {
-        return categoryService.getCategoryByName(name);
+    /**
+     * Récupère une catégorie par son nom.
+     * @param name nom de la catégorie
+     * @return la catégorie correspondante
+     */
+    @GetMapping("/name/{name}")
+    public ResponseEntity<CategoryResponseDTO> getCategoryByName(@PathVariable String name) {
+        return ResponseEntity.ok(categoryService.getCategoryByName(name));
     }
 
-    @GetMapping("/children/{id}")
-    public List<Category> getChildrenByCategoryId(@PathVariable Long id) {
-        Category category = categoryService.getCategoryById(id);
-        return category.getChildren().stream().toList();
+    /**
+     * Récupère les enfants d'une catégorie donnée.
+     * @param id identifiant de la catégorie
+     * @return liste des enfants de la catégorie
+     */
+    @GetMapping("/{id}/children")
+    public ResponseEntity<List<CategoryResponseDTO>> getChildren(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getChildrenByCategoryId(id));
     }
 
-    @GetMapping("/parent/{id}")
-    public Category getParentByCategoryId(@PathVariable Long id) {
-        Category category = categoryService.getCategoryById(id);
-        return category.getParent() != null ? category.getParent() : null; // Retourne null si pas de parent
+    /**
+     * Crée une nouvelle catégorie.
+     * @param categoryRequestDTO données de la catégorie à créer
+     * @return la catégorie créée
+     */
+    @PostMapping
+    public ResponseEntity<CategoryResponseDTO> createCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
+        CategoryResponseDTO createdCategory = categoryService.createCategory(categoryRequestDTO);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdCategory.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(createdCategory);
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Void> createCategory(@Valid @RequestBody Category category, @RequestParam(required = false) Long parentId) {
-        return categoryService.createCategory(category, Optional.ofNullable(parentId));
-    }
-
+    /**
+     * Met à jour une catégorie existante.
+     * @param id identifiant de la catégorie à mettre à jour
+     * @param categoryRequestDTO nouvelles données de la catégorie
+     * @return la catégorie mise à jour
+     */
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCategory(@PathVariable Long id, @Valid @RequestBody Category category) {
-        return categoryService.updateCategory(id, category);
+    public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
+        CategoryResponseDTO updatedCategory = categoryService.updateCategory(id, categoryRequestDTO);
+        return ResponseEntity.ok(updatedCategory);
     }
 
+    /**
+     * Supprime une catégorie de façon sécurisée (refuse si la catégorie a des enfants).
+     * @param id identifiant de la catégorie à supprimer
+     * @return réponse sans contenu
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSafelyCategory(@PathVariable Long id) {
-        return categoryService.deleteSafelyCategory(id);
+    public ResponseEntity<Void> deleteSafely(@PathVariable Long id) {
+        categoryService.deleteSafelyCategory(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}/force")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        return categoryService.deleteCascadeCategory(id);
+    /**
+     * Supprime une catégorie et ses enfants (cascade).
+     * @param id identifiant de la catégorie à supprimer
+     * @return réponse sans contenu
+     */
+    @DeleteMapping("/{id}/cascade")
+    public ResponseEntity<Void> deleteCascade(@PathVariable Long id) {
+        categoryService.deleteCascadeCategory(id);
+        return ResponseEntity.noContent().build();
     }
 }

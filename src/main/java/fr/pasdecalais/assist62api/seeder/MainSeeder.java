@@ -9,8 +9,8 @@ public class MainSeeder {
     // This class is intended to seed the database with initial data.
     // It can be used to create categories, subcategories, and other entities.
     // The actual implementation will depend on the specific requirements of the application.
+    // This section is intended solely for demonstration, testing, and development purposes. (Dev)
 
-    // Note: The implementation of these methods is not provided in this snippet.
     private final CategorySeeder categorySeeder;
 
     @Autowired
@@ -20,6 +20,6 @@ public class MainSeeder {
 
     @PostConstruct
     public void seed(){
-        categorySeeder.seedCategories(1, 1);
+        categorySeeder.seedCategories(2, 3);
     }
 }

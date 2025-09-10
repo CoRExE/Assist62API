@@ -29,6 +29,12 @@ dependencies {
     implementation("org.yaml:snakeyaml:1.26")
     implementation("com.github.javafaker:javafaker:1.0.2")
 
+    // Security
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+    implementation("io.jsonwebtoken:jjwt-impl:0.12.3")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
+
 }
 
 tasks.withType<Test> {

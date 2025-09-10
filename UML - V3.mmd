@@ -1,0 +1,86 @@
+---
+config:
+  class:
+    hideEmptyMembersBox: true
+---
+classDiagram
+    direction LR
+
+class NewsType {
+    <<enumeration>>
+    INFO
+    ALERTE
+    MISE_A_JOUR
+}
+
+class User {
+-Long id
+-String username
+-String password
+-String role
+}
+
+class Category {
+-Long id
+-String nom
+}
+
+class Problem {
+-Long id
+-String titre
+-String description
+}
+
+class News {
+-Long id
+-String titre
+-String content
+-NewsType type
+-LocalDateTime dateCreation
+}
+
+class DecisionStep {
+-Long id
+-String text
+-String imageUrl
+-boolean isFinal
+}
+
+class Choice {
+-Long id
+-String text
+}
+
+class Notification {
+-Long id
+-String message
+-Date creationDate
+-boolean isRead
+}
+
+class Abonnement
+class Favoris
+
+
+User "1" -- "0..*" Abonnement
+Category "1" -- "0..*" Abonnement
+
+User "1" -- "0..*" Favoris
+Category "1" -- "0..*" Favoris
+
+User "1" -- "0..*" Notification
+News "1" -- "0..*" Notification
+
+Category "1" --* "0..*" Problem : contient
+Category "1" --* "1" Category : "parent"
+Category "1" --* "0..*" Category : "children"
+Category "1" --* "0..*" News : concerne
+
+Problem "1" --|> "1" DecisionStep : "firstStep"
+
+User "1" --* "0..*" News : publie
+
+DecisionStep "1" --* "1..*" Choice : propose
+Choice "1" --> "0..1" DecisionStep : "nextStep"
+
+News -- NewsType
