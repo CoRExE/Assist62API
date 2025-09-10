@@ -3,12 +3,14 @@ package fr.pasdecalais.assist62api.model;
 import jakarta.persistence.*;
 
 /**
- * Représente un choix qu'un utilisateur peut faire à une étape de décision.
- * Un choix peut mener à une autre étape.
+ * Représente un choix abstrait qu'un utilisateur peut faire à une étape de décision.
+ * Cette classe sert de base pour différents types de choix concrets.
  */
 @Entity
 @Table(name = "choices")
-public class Choice {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "choice_type", discriminatorType = DiscriminatorType.STRING)
+public abstract class Choice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +22,6 @@ public class Choice {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "decision_step_id", nullable = false)
     private DecisionStep decisionStep;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "next_step_id")
-    private DecisionStep nextStep;
 
     // Getters and Setters
 
@@ -49,13 +47,5 @@ public class Choice {
 
     public void setDecisionStep(DecisionStep decisionStep) {
         this.decisionStep = decisionStep;
-    }
-
-    public DecisionStep getNextStep() {
-        return nextStep;
-    }
-
-    public void setNextStep(DecisionStep nextStep) {
-        this.nextStep = nextStep;
     }
 }

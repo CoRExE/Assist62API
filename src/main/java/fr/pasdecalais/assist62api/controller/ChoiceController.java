@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 /**
  * Contrôleur REST pour la gestion des choix.
@@ -34,6 +35,16 @@ public class ChoiceController {
     @GetMapping("/{id}")
     public ResponseEntity<ChoiceResponseDTO> getChoiceById(@PathVariable Long id) {
         return ResponseEntity.ok(choiceService.getChoiceById(id));
+    }
+
+    /**
+     * Récupère tous les choix d'un type donné.
+     * @param type type des choix à récupérer
+     * @return liste des choix correspondants
+     */
+    @GetMapping("/type/{type}")
+    public ResponseEntity<List<ChoiceResponseDTO>> getChoiceByType(@PathVariable String type) {
+        return ResponseEntity.ok(choiceService.getChoicesByType(type));
     }
 
     /**

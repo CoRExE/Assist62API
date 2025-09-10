@@ -17,7 +17,6 @@ import java.net.URI;
  */
 @RestController
 @RequestMapping("/api/step")
-@PreAuthorize("hasAnyAuthority('ADMIN', 'MODO')")
 public class DecisionStepController {
 
     private final DecisionStepService decisionStepService;
@@ -43,6 +42,7 @@ public class DecisionStepController {
      * @return l'étape créée
      */
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODO')")
     public ResponseEntity<DecisionStepResponseDTO> createDecisionStep(@Valid @RequestBody DecisionStepRequestDTO requestDTO) {
         DecisionStepResponseDTO createdStep = decisionStepService.createDecisionStep(requestDTO);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -59,6 +59,7 @@ public class DecisionStepController {
      * @return l'étape mise à jour
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODO')")
     public ResponseEntity<DecisionStepResponseDTO> updateDecisionStep(@PathVariable Long id, @Valid @RequestBody DecisionStepRequestDTO requestDTO) {
         DecisionStepResponseDTO updatedStep = decisionStepService.updateDecisionStep(id, requestDTO);
         return ResponseEntity.ok(updatedStep);
@@ -70,6 +71,7 @@ public class DecisionStepController {
      * @return réponse sans contenu
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MODO')")
     public ResponseEntity<Void> deleteDecisionStep(@PathVariable Long id) {
         decisionStepService.deleteDecisionStep(id);
         return ResponseEntity.noContent().build();

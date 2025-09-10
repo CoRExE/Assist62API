@@ -10,6 +10,7 @@ public class ProblemResponseDTO {
     private String description;
     private Long categoryId;
     private String categoryName;
+    private DecisionStepResponseDTO firstStep;
 
     // Getters and Setters
 
@@ -51,5 +52,13 @@ public class ProblemResponseDTO {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public DecisionStepResponseDTO getFirstStep() {
+        return firstStep;
+    }
+
+    public void setFirstStep(DecisionStepResponseDTO firstStep) {
+        this.firstStep = firstStep;
     }
 }

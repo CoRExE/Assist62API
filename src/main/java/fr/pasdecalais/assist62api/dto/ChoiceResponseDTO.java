@@ -1,13 +1,25 @@
 package fr.pasdecalais.assist62api.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 /**
- * DTO pour représenter un choix dans les réponses de l'API.
+ * DTO de base abstrait pour les réponses de choix.
+ * Utilise les annotations Jackson pour la gestion du polymorphisme.
  */
-public class ChoiceResponseDTO {
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = NavigationChoiceResponseDTO.class, name = "NAVIGATION"),
+    @JsonSubTypes.Type(value = UrlChoiceResponseDTO.class, name = "URL"),
+    @JsonSubTypes.Type(value = FinalChoiceResponseDTO.class, name = "FINAL")
+})
+public abstract class ChoiceResponseDTO {
 
     private Long id;
     private String text;
-    private Long nextStepId;
 
     // Getters and Setters
 
@@ -25,13 +37,5 @@ public class ChoiceResponseDTO {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public Long getNextStepId() {
-        return nextStepId;
-    }
-
-    public void setNextStepId(Long nextStepId) {
-        this.nextStepId = nextStepId;
     }
 }

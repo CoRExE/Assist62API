@@ -1,17 +1,27 @@
 package fr.pasdecalais.assist62api.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.constraints.NotBlank;
+
 import jakarta.validation.constraints.NotNull;
 
 /**
- * DTO pour la création ou la mise à jour d'un choix.
+ * DTO de base abstrait pour les requêtes de choix.
  */
-public class ChoiceRequestDTO {
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type")
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = NavigationChoiceRequestDTO.class, name = "NAVIGATION"),
+    @JsonSubTypes.Type(value = UrlChoiceRequestDTO.class, name = "URL"),
+    @JsonSubTypes.Type(value = FinalChoiceRequestDTO.class, name = "FINAL")
+})
+public abstract class ChoiceRequestDTO {
 
     @NotBlank
     private String text;
-
-    private Long nextStepId;
 
     @NotNull
     private Long decisionStepId;
@@ -24,14 +34,6 @@ public class ChoiceRequestDTO {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public Long getNextStepId() {
-        return nextStepId;
-    }
-
-    public void setNextStepId(Long nextStepId) {
-        this.nextStepId = nextStepId;
     }
 
     public Long getDecisionStepId() {
