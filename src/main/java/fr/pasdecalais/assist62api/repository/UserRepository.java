@@ -2,7 +2,6 @@ package fr.pasdecalais.assist62api.repository;
 
 import fr.pasdecalais.assist62api.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
 
 /**
@@ -19,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return un {@link Optional} contenant l'utilisateur s'il est trouvé, sinon un {@link Optional} vide.
      */
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByName(String name);
 }

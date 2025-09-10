@@ -6,20 +6,30 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MainSeeder {
-    // This class is intended to seed the database with initial data.
-    // It can be used to create categories, subcategories, and other entities.
-    // The actual implementation will depend on the specific requirements of the application.
-    // This section is intended solely for demonstration, testing, and development purposes. (Dev)
 
     private final CategorySeeder categorySeeder;
+    private final UserSeeder userSeeder;
+    private final ProblemSeeder problemSeeder;
 
     @Autowired
-    public MainSeeder(CategorySeeder categorySeeder) {
+    public MainSeeder(CategorySeeder categorySeeder, UserSeeder userSeeder, ProblemSeeder problemSeeder) {
         this.categorySeeder = categorySeeder;
+        this.userSeeder = userSeeder;
+        this.problemSeeder = problemSeeder;
     }
 
     @PostConstruct
     public void seed(){
-        categorySeeder.seedCategories(2, 3);
+        // Seed categories and users first as problems depend on them
+        if (categorySeeder != null) {
+            categorySeeder.seedCategories(2, 3);
+        }
+        if (userSeeder != null) {
+            userSeeder.seedUsers(10);
+        }
+        // Then seed problems
+        if (problemSeeder != null) {
+            problemSeeder.seedProblems(10, 3, 2);
+        }
     }
 }

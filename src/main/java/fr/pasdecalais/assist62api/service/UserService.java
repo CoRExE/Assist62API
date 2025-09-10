@@ -7,6 +7,8 @@ import fr.pasdecalais.assist62api.model.User;
 import fr.pasdecalais.assist62api.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +21,28 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private static final String USER_NOT_FOUND_WITH_ID = "User not found with id: ";
+    private static final String USER_NOT_FOUND_WITH_NAME = "User not found with name: ";
     private static final String USER_NOT_FOUND_WITH_EMAIL = "User not found with email: ";
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    /**
+     * Charge un utilisateur par son nom d'utilisateur (email).
+     *
+     * @param username le nom de l'utilisateur
+     * @return l'utilisateur correspondant
+     * @throws UsernameNotFoundException si l'utilisateur n'existe pas
+     */
+    @Override
+    public User loadUserByUsername(String username) {
+        return userRepository.findByName(username)
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND_WITH_NAME + username));
+    }
 
     /**
      * Constructeur du service utilisateur.
