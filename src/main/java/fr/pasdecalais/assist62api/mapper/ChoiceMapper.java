@@ -22,32 +22,35 @@ public class ChoiceMapper {
      * @throws IllegalArgumentException si le type de Choice est inconnu
      */
     public ChoiceResponseDTO toChoiceResponseDTO(Choice choice) {
-        if (choice == null) {
-            return null;
-        }
-
-        if (choice instanceof NavigationChoice navigationChoice) {
-            NavigationChoiceResponseDTO dto = new NavigationChoiceResponseDTO();
-            dto.setId(navigationChoice.getId());
-            dto.setText(navigationChoice.getText());
-            if (navigationChoice.getNextStep() != null) {
-                dto.setNextStepId(navigationChoice.getNextStep().getId());
+        switch (choice) {
+            case null -> {
+                return null;
             }
-            return dto;
-        } else if (choice instanceof UrlChoice urlChoice) {
-            UrlChoiceResponseDTO dto = new UrlChoiceResponseDTO();
-            dto.setId(urlChoice.getId());
-            dto.setText(urlChoice.getText());
-            dto.setUrl(urlChoice.getUrl());
-            return dto;
-        } else if (choice instanceof FinalChoice finalChoice) {
-            FinalChoiceResponseDTO dto = new FinalChoiceResponseDTO();
-            dto.setId(finalChoice.getId());
-            dto.setText(finalChoice.getText());
-            dto.setConclusionText(finalChoice.getConclusionText());
-            return dto;
+            case NavigationChoice navigationChoice -> {
+                NavigationChoiceResponseDTO dto = new NavigationChoiceResponseDTO();
+                dto.setId(navigationChoice.getId());
+                dto.setText(navigationChoice.getText());
+                if (navigationChoice.getNextStep() != null) {
+                    dto.setNextStepId(navigationChoice.getNextStep().getId());
+                }
+                return dto;
+            }
+            case UrlChoice urlChoice -> {
+                UrlChoiceResponseDTO dto = new UrlChoiceResponseDTO();
+                dto.setId(urlChoice.getId());
+                dto.setText(urlChoice.getText());
+                dto.setUrl(urlChoice.getUrl());
+                return dto;
+            }
+            case FinalChoice finalChoice -> {
+                FinalChoiceResponseDTO dto = new FinalChoiceResponseDTO();
+                dto.setId(finalChoice.getId());
+                dto.setText(finalChoice.getText());
+                dto.setConclusionText(finalChoice.getConclusionText());
+                return dto;
+            }
+            default ->
+                throw new IllegalArgumentException("Unknown Choice type: " + choice.getClass().getName());
         }
-
-        throw new IllegalArgumentException("Unknown Choice type: " + choice.getClass().getName());
     }
 }
