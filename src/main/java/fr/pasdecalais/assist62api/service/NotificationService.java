@@ -30,7 +30,6 @@ public class NotificationService {
     private final UserRepository userRepository;
     private final NotificationMapper notificationMapper;
 
-    @Lazy
     private final NotificationService self;
 
     @Autowired
@@ -38,7 +37,7 @@ public class NotificationService {
             NotificationRepository notificationRepository,
             UserRepository userRepository,
             NotificationMapper notificationMapper,
-            NotificationService self
+            @Lazy NotificationService self
     ) {
         this.notificationRepository = notificationRepository;
         this.userRepository = userRepository;
