@@ -17,9 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Service pour la gestion des actualités.
- */
 @Service
 @Transactional
 public class NewsService {
@@ -30,12 +27,14 @@ public class NewsService {
     private final NewsRepository newsRepository;
     private final CategoryRepository categoryRepository;
     private final NewsMapper newsMapper;
+    private final NotificationService notificationService;
 
     @Autowired
-    public NewsService(NewsRepository newsRepository, CategoryRepository categoryRepository, NewsMapper newsMapper) {
+    public NewsService(NewsRepository newsRepository, CategoryRepository categoryRepository, NewsMapper newsMapper, NotificationService notificationService) {
         this.newsRepository = newsRepository;
         this.categoryRepository = categoryRepository;
         this.newsMapper = newsMapper;
+        this.notificationService = notificationService;
     }
 
     @Transactional(readOnly = true)
@@ -70,6 +69,10 @@ public class NewsService {
         news.setCreationDate(LocalDateTime.now());
 
         News savedNews = newsRepository.save(news);
+
+        // Trigger notification creation
+        notificationService.createNotificationsForNews(savedNews);
+
         return newsMapper.toNewsResponseDTO(savedNews);
     }
 
